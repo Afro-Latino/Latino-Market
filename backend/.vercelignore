@@ -37,3 +37,20 @@ htmlcov/
 *.md
 !README.md
 
+# Large data files
+*.csv
+*.json
+*.parquet
+*.h5
+*.pkl
+*.pickle
+
+# Model files (if any)
+*.pt
+*.pth
+*.h5
+*.ckpt
+
+# Node modules (if any)
+node_modules/
+
