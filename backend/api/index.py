@@ -7,14 +7,20 @@ from fastapi import (
     Request,
     Response,
     Depends,
+    Depends,
 )
+import sys
+from pathlib import Path
+
+# Add parent directory to path to allow importing models and auth
+sys.path.append(str(Path(__file__).parent.parent))
+
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
-from pathlib import Path
 from typing import Optional, List
 from datetime import datetime, timedelta, timezone
 from emergentintegrations.payments.stripe.checkout import (
@@ -46,11 +52,6 @@ from models import (
     PaymentTransaction,
     Testimonial,
 )
-import sys
-
-# Add parent directory to path to allow importing models and auth
-sys.path.append(str(Path(__file__).parent.parent))
-
 from auth import (
     hash_password,
     verify_password,
