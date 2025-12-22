@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowRight, Sparkles, Truck, Users, Check } from 'lucide-react';
-import { productsAPI, categoriesAPI, regionsAPI, testimonialsAPI } from '../services/api';
+import { ArrowRight, Sparkles, Truck, Users, Check, MapPin, Store } from 'lucide-react';
+import { productsAPI, categoriesAPI, regionsAPI, testimonialsAPI, noticesAPI } from '../services/api';
 import { mockMealKits } from '../mock';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -13,22 +13,29 @@ export const HomePage = () => {
   const [categories, setCategories] = useState([]);
   const [regions, setRegions] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
+  const [holidayNotice, setHolidayNotice] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [productsRes, categoriesRes, regionsRes, testimonialsRes] = await Promise.all([
-          productsAPI.getAll({ featured: true }),
+        const [productsRes, categoriesRes, regionsRes, testimonialsRes, noticesRes] = await Promise.all([
+          productsAPI.getAll({ limit: 20 }),
           categoriesAPI.getAll(),
           regionsAPI.getAll(),
-          testimonialsAPI.getAll()
+          testimonialsAPI.getAll(),
+          noticesAPI.getActive()
         ]);
         
         setFeaturedProducts(productsRes.products || []);
         setCategories(categoriesRes.categories || []);
         setRegions(regionsRes.regions || []);
         setTestimonials(testimonialsRes.testimonials || []);
+        
+        // Get first active notice
+        if (noticesRes.notices && noticesRes.notices.length > 0) {
+          setHolidayNotice(noticesRes.notices[0]);
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -52,33 +59,61 @@ export const HomePage = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative h-[600px] flex items-center justify-center overflow-hidden">
+      {/* Hero Section with Storefront Image */}
+      <section className="relative min-h-[700px] flex items-center overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1665332195309-9d75071138f0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njd8MHwxfHNlYXJjaHwxfHxBZnJpY2FuJTIwZm9vZHxlbnwwfHx8fDE3NjUwNTMzNDB8MA&ixlib=rb-4.1.0&q=85"
-            alt="Hero"
+            src="https://customer-assets.emergentagent.com/job_ethic-ecom/artifacts/nlvbpsui_Store%20front.jpg"
+            alt="AFRO-LATINO Marketplace Store Front - Moncton"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent"></div>
         </div>
-        <div className="relative z-10 container mx-auto px-4 text-white">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+        
+        <div className="relative z-10 container mx-auto px-4 py-12">
+          {/* Store Badge */}
+          <div className="inline-flex items-center space-x-2 bg-amber-500 text-white px-4 py-2 rounded-full mb-6">
+            <MapPin className="w-4 h-4" />
+            <span className="font-medium text-sm">Visit Our Store in Moncton, NB</span>
+          </div>
+          
+          <h1 className="text-5xl md:text-7xl font-bold mb-4 leading-tight text-white">
             {t('hero.title1')}<br />
-            {t('hero.title2')}
+            <span className="text-red-500">{t('hero.title2')}</span>
           </h1>
-          <p className="text-xl md:text-2xl mb-8 max-w-2xl">
+          
+          <p className="text-xl md:text-2xl mb-6 text-white/90">
             {t('hero.subtitle')}
           </p>
+          
+          {/* Local Source Info Box */}
+          <div className="bg-white/95 backdrop-blur-sm rounded-lg p-4 mb-8 max-w-md">
+            <div className="flex items-start space-x-3">
+              <Store className="w-6 h-6 text-amber-600 flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="font-bold text-gray-900">Your Local Source for Authentic Products</h3>
+                <p className="text-sm text-gray-600 mt-1">
+                  Serving the Greater Moncton community with quality African and Latino groceries, ingredients, and cultural products
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          {/* CTA Buttons */}
           <div className="flex flex-wrap gap-4">
             <Button asChild size="lg" className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-6 text-lg">
               <Link to="/shop/african">
                 {t('hero.shopAfrican')} <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="bg-white/10 backdrop-blur-sm border-white text-white hover:bg-white/20 px-8 py-6 text-lg">
+            <Button asChild size="lg" className="bg-red-600 hover:bg-red-700 text-white px-8 py-6 text-lg">
               <Link to="/shop/latino">
                 {t('hero.shopLatino')} <ArrowRight className="ml-2 w-5 h-5" />
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="bg-white/90 hover:bg-white text-gray-900 px-8 py-6 text-lg">
+              <Link to="/shop">
+                Browse All Products <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
             </Button>
           </div>
@@ -118,7 +153,7 @@ export const HomePage = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {categories.slice(0, 8).map(category => (
               <Link
-                key={category.id}
+                key={category.category_id || category.id}
                 to={`/shop?category=${category.name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`}
                 className="group"
               >
@@ -144,7 +179,7 @@ export const HomePage = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {regions.map(region => (
               <Link
-                key={region.id}
+                key={region.region_id || region.id}
                 to={`/shop?region=${region.name.toLowerCase().replace(/ /g, '-')}`}
                 className="group relative h-64 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
               >
@@ -156,7 +191,7 @@ export const HomePage = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                   <h3 className="text-2xl font-bold mb-2">{region.name}</h3>
-                  <p className="text-sm opacity-90">{region.countries.join(', ')}</p>
+                  <p className="text-sm opacity-90">{region.countries?.join(', ')}</p>
                 </div>
               </Link>
             ))}
@@ -173,25 +208,38 @@ export const HomePage = () => {
               <Link to="/shop">View All</Link>
             </Button>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.map(product => (
-              <Link key={product.id} to={`/product/${product.id}`} className="group">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {featuredProducts.slice(0, 16).map(product => (
+              <Link key={product.product_id || product.id} to={`/product/${product.product_id || product.id}`} className="group">
                 <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-                  <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
+                  <div className="relative h-40 md:h-48 overflow-hidden bg-gray-100">
+                    {product.image ? (
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        No Image
+                      </div>
+                    )}
                     <div className="absolute top-2 right-2 bg-white px-2 py-1 rounded-full text-xs font-semibold">
                       {product.culture}
                     </div>
+                    {!product.in_stock && (
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                        <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                          Out of Stock
+                        </span>
+                      </div>
+                    )}
                   </div>
-                  <CardContent className="p-4">
-                    <h3 className="font-semibold mb-2 group-hover:text-amber-600 transition-colors">{product.name}</h3>
+                  <CardContent className="p-3 md:p-4">
+                    <h3 className="font-semibold text-sm md:text-base mb-1 md:mb-2 group-hover:text-amber-600 transition-colors line-clamp-2">{product.name}</h3>
                     <div className="flex items-center justify-between">
-                      <span className="text-xl font-bold text-amber-600">${product.price}</span>
-                      <span className="text-sm text-gray-500">{product.country}</span>
+                      <span className="text-lg md:text-xl font-bold text-amber-600">${product.price || 0}</span>
+                      <span className="text-xs md:text-sm text-gray-500">{product.country}</span>
                     </div>
                   </CardContent>
                 </Card>
@@ -240,8 +288,8 @@ export const HomePage = () => {
             What Our Community Says
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map(testimonial => (
-              <Card key={testimonial.id} className="hover:shadow-lg transition-shadow">
+            {testimonials.length > 0 ? testimonials.map(testimonial => (
+              <Card key={testimonial.testimonial_id || testimonial.id} className="hover:shadow-lg transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     <img
@@ -255,14 +303,43 @@ export const HomePage = () => {
                     </div>
                   </div>
                   <div className="flex mb-3">
-                    {[...Array(testimonial.rating)].map((_, i) => (
+                    {[...Array(testimonial.rating || 5)].map((_, i) => (
                       <span key={i} className="text-amber-500">★</span>
                     ))}
                   </div>
                   <p className="text-gray-700">{testimonial.text}</p>
                 </CardContent>
               </Card>
-            ))}
+            )) : (
+              // Default testimonials if none in database
+              [
+                { id: 1, name: 'Amara Johnson', location: 'Moncton, NB', text: "Finally found authentic Nigerian ingredients in Moncton! The Egusi and Jollof rice mix are perfect.", avatar: 'https://images.pexels.com/photos/6305734/pexels-photo-6305734.jpeg', rating: 5 },
+                { id: 2, name: 'Carlos Rodriguez', location: 'Moncton, NB', text: "Best place for authentic Mexican and Colombian products. Fast delivery and great quality!", avatar: 'https://images.pexels.com/photos/4965326/pexels-photo-4965326.jpeg', rating: 5 },
+                { id: 3, name: 'Fatima Santos', location: 'Moncton, NB', text: "Love discovering new fusion recipes. This marketplace brings my African and Latino heritage together.", avatar: 'https://images.unsplash.com/photo-1578203657036-746e6c4eb3b1?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHwyfHxkaXZlcnNlJTIwY3Vpc2luZXxlbnwwfHx8fDE3NjUwNTMzNTJ8MA&ixlib=rb-4.1.0&q=85', rating: 5 }
+              ].map(testimonial => (
+                <Card key={testimonial.id} className="hover:shadow-lg transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex items-center mb-4">
+                      <img
+                        src={testimonial.avatar}
+                        alt={testimonial.name}
+                        className="w-12 h-12 rounded-full object-cover mr-4"
+                      />
+                      <div>
+                        <h4 className="font-semibold">{testimonial.name}</h4>
+                        <p className="text-sm text-gray-500">{testimonial.location}</p>
+                      </div>
+                    </div>
+                    <div className="flex mb-3">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <span key={i} className="text-amber-500">★</span>
+                      ))}
+                    </div>
+                    <p className="text-gray-700">{testimonial.text}</p>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
         </div>
       </section>

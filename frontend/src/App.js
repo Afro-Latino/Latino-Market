@@ -34,9 +34,7 @@ function App() {
             {/* Routes with Header/Footer */}
             <Route path="/*" element={
               <>
-                <AnnouncementBanner />
                 <Header />
-                <HolidayNotice />
                 <main className="flex-grow">
                   <Routes>
                     <Route path="/" element={<HomePage />} />
@@ -50,6 +48,7 @@ function App() {
                     <Route path="/blog" element={<BlogPage />} />
                     <Route path="/about" element={<AboutPage />} />
                     <Route path="/account" element={<AccountPage />} />
+                    <Route path="/deals" element={<ShopPage />} />
                   </Routes>
                 </main>
                 <Footer />
