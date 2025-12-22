@@ -1,0 +1,21 @@
+{
+    "builds": [
+        {
+            "src": "index.py",
+            "use": "@vercel/python",
+            "config": {
+                "includeFiles": [
+                    "models.py",
+                    "auth.py",
+                    "emergentintegrations/**"
+                ]
+            }
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "index.py"
+        }
+    ]
+}

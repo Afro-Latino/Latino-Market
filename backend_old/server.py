@@ -25,29 +25,12 @@ from models import (
 from auth import hash_password, verify_password, create_access_token, get_current_user, get_current_admin
 
 ROOT_DIR = Path(__file__).parent
-# Load .env file if it exists (for local development)
-# In production (Vercel), use environment variables from Vercel dashboard
-env_path = ROOT_DIR / '.env'
-if env_path.exists():
-    load_dotenv(env_path)
+load_dotenv(ROOT_DIR / '.env')
 
 # MongoDB connection
-mongo_url = os.getenv('MONGO_URL')
-if not mongo_url:
-    raise ValueError("MONGO_URL environment variable is required")
-
-db_name = os.getenv('DB_NAME')
-if not db_name:
-    raise ValueError("DB_NAME environment variable is required")
-
-# Configure client for serverless with connection pooling
-client = AsyncIOMotorClient(
-    mongo_url,
-    maxPoolSize=10,
-    minPoolSize=1,
-    serverSelectionTimeoutMS=5000
-)
-db = client[db_name]
+mongo_url = os.environ['MONGO_URL']
+client = AsyncIOMotorClient(mongo_url)
+db = client[os.environ['DB_NAME']]
 
 # Create the main app
 app = FastAPI(title="Afro-Latino Marketplace API")
@@ -886,9 +869,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Note: In serverless environments like Vercel, shutdown events may not be called
-# Motor handles connection cleanup automatically, so this is optional
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    if client:
-        client.close()
+    client.close()

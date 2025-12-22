@@ -1,11 +1,39 @@
-venv
-__pycache__
-*.pyc
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment files (use Vercel environment variables instead)
 .env
-.DS_Store
-.vercel
-*.log
-.git
-node_modules
-dist
-build
+.env.local
+.env.*.local
+
+# Old server files
+server_old.py
+
+# Development files
+create_admin.py
+seed_data.py
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Documentation
+*.md
+!README.md
+
