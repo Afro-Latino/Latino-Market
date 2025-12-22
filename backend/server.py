@@ -932,6 +932,11 @@ async def update_user(
     updated_user = await db.users.find_one({'user_id': user_id}, {'_id': 0, 'password_hash': 0})
     return updated_user
 
+# Add root route for health check
+@app.get("/")
+async def root():
+    return {"message": "Afro-Latino Marketplace API", "status": "ok"}
+
 # Include the router in the main app
 app.include_router(api_router)
 
