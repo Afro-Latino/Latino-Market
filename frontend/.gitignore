@@ -2,3 +2,4 @@ frontend/node_modules
 backend/_pycache
 *.pyc
 .env
+package-lock.json
