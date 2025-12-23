@@ -205,6 +205,7 @@ async def create_product(
     new_product = Product(**product.dict())
     await db.products.insert_one(new_product.dict())
     
+    
     # Update category count
     await db.categories.update_one(
         {'name': product.category},
