@@ -407,7 +407,13 @@ export const AdminPage = () => {
         discount_value: 10,
         is_active: true,
       },
-      blog: { title: "", content: "", image: "", author: "", published: true },
+      blog: {
+        title: "",
+        content: "",
+        featured_image: "",
+        author: "",
+        published: true,
+      },
       recipe: {
         title: "",
         description: "",
@@ -866,7 +872,7 @@ export const AdminPage = () => {
       blog: [
         { name: "title", label: "Title", type: "text" },
         { name: "content", label: "Content", type: "textarea" },
-        { name: "image", label: "Image URL", type: "text" },
+        { name: "featured_image", label: "Featured Image URL", type: "text" },
         { name: "author", label: "Author", type: "text" },
         { name: "published", label: "Published", type: "checkbox" },
       ],
@@ -1609,6 +1615,7 @@ export const AdminPage = () => {
               content: generatedBlog.content,
               excerpt: generatedBlog.excerpt,
               category: generatedBlog.category,
+              featured_image: generatedBlog.image || "",
               author: currentUser?.name || "Admin",
               published: false,
             });
