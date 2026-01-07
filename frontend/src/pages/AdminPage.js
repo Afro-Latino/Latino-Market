@@ -421,6 +421,8 @@ export const AdminPage = () => {
         instructions: "",
         image: "",
         culture: "African",
+        cook_time: "30 mins",
+        difficulty: "Medium",
       },
       notice: {
         message: "",
@@ -497,8 +499,22 @@ export const AdminPage = () => {
           ? () => blogAPI.update(editingItem.post_id, formData)
           : () => blogAPI.create(formData),
         recipe: editingItem
-          ? () => recipesAPI.update(editingItem.recipe_id, formData)
-          : () => recipesAPI.create(formData),
+          ? () =>
+              recipesAPI.update(editingItem.recipe_id, {
+                ...formData,
+                ingredients: Array.isArray(formData.ingredients)
+                  ? formData.ingredients
+                  : formData.ingredients.split("\n"),
+                instructions: Array.isArray(formData.instructions)
+                  ? formData.instructions
+                  : formData.instructions.split("\n"),
+              })
+          : () =>
+              recipesAPI.create({
+                ...formData,
+                ingredients: formData.ingredients.split("\n"),
+                instructions: formData.instructions.split("\n"),
+              }),
         notice: editingItem
           ? () => noticesAPI.update(editingItem.notice_id, formData)
           : () => noticesAPI.create(formData),
@@ -887,6 +903,13 @@ export const AdminPage = () => {
           label: "Culture",
           type: "select",
           options: ["African", "Latino", "Fusion"],
+        },
+        { name: "cook_time", label: "Cook Time (e.g. 30 mins)", type: "text" },
+        {
+          name: "difficulty",
+          label: "Difficulty",
+          type: "select",
+          options: ["Easy", "Medium", "Hard"],
         },
       ],
       notice: [
