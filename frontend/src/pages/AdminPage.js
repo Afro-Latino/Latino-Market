@@ -425,6 +425,7 @@ export const AdminPage = () => {
         difficulty: "Medium",
       },
       notice: {
+        title: "",
         message: "",
         start_date: new Date().toISOString().split("T")[0],
         end_date: new Date().toISOString().split("T")[0],
@@ -913,6 +914,7 @@ export const AdminPage = () => {
         },
       ],
       notice: [
+        { name: "title", label: "Title", type: "text" },
         { name: "message", label: "Message", type: "text" },
         { name: "start_date", label: "Start Date", type: "date" },
         { name: "end_date", label: "End Date", type: "date" },
