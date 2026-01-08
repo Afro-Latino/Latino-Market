@@ -1,77 +1,81 @@
-import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { authAPI } from '../services/api';
-import { Button } from '../components/ui/button';
-import { Card, CardContent } from '../components/ui/card';
-import { Label } from '../components/ui/label';
-import { Input } from '../components/ui/input';
-import { toast } from 'sonner';
-import { Mail, Lock, LogIn, ArrowLeft } from 'lucide-react';
+import React, { useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { authAPI } from "../services/api";
+import { Button } from "../components/ui/button";
+import { Card, CardContent } from "../components/ui/card";
+import { Label } from "../components/ui/label";
+import { Input } from "../components/ui/input";
+import { toast } from "sonner";
+import { Mail, Lock, LogIn, ArrowLeft, Eye, EyeOff } from "lucide-react";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const isAdminLogin = location.pathname === '/admin';
-  
+  const isAdminLogin = location.pathname === "/admin";
+
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const handleGoogleLogin = () => {
-    const redirectUrl = window.location.origin + '/account';
-    toast.success('Redirecting to Google login...');
+    const redirectUrl = window.location.origin + "/account";
+    toast.success("Redirecting to Google login...");
     // In production: window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
-    
+
     // For now, simulate successful login
     setTimeout(() => {
-      localStorage.setItem('user', JSON.stringify({
-        name: 'Demo User',
-        email: 'demo@afrolatino.ca'
-      }));
-      toast.success('Login successful!');
-      navigate('/account');
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          name: "Demo User",
+          email: "demo@afrolatino.ca",
+        })
+      );
+      toast.success("Login successful!");
+      navigate("/account");
     }, 1000);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.email || !formData.password) {
-      toast.error('Please fill in all fields');
+      toast.error("Please fill in all fields");
       return;
     }
 
     setIsLoading(true);
-    
+
     try {
       const response = await authAPI.login({
         email: formData.email,
-        password: formData.password
+        password: formData.password,
       });
-      
+
       // Store user data
-      localStorage.setItem('user', JSON.stringify(response.user));
-      
-      toast.success('Login successful!');
-      
+      localStorage.setItem("user", JSON.stringify(response.user));
+
+      toast.success("Login successful!");
+
       // Redirect based on user role
       if (response.user.is_admin) {
-        navigate('/admin');
+        navigate("/admin");
       } else {
-        navigate('/account');
+        navigate("/account");
       }
     } catch (error) {
-      console.error('Login error:', error);
-      toast.error(error.response?.data?.detail || 'Invalid email or password');
+      console.error("Login error:", error);
+      toast.error(error.response?.data?.detail || "Invalid email or password");
     } finally {
       setIsLoading(false);
     }
@@ -82,17 +86,19 @@ export const LoginPage = () => {
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <Link to="/" className="inline-block">
-            <img 
-              src="https://customer-assets.emergentagent.com/job_culticommerce/artifacts/x3503la8_afro-latino%20logo.png" 
-              alt="Afro-Latino Marketplace" 
+            <img
+              src="https://customer-assets.emergentagent.com/job_culticommerce/artifacts/x3503la8_afro-latino%20logo.png"
+              alt="Afro-Latino Marketplace"
               className="h-16 mx-auto mb-4"
             />
           </Link>
           <h1 className="text-3xl font-bold mb-2">
-            {isAdminLogin ? 'Admin Login' : 'Welcome Back'}
+            {isAdminLogin ? "Admin Login" : "Welcome Back"}
           </h1>
           <p className="text-gray-600">
-            {isAdminLogin ? 'Access the administration panel' : 'Sign in to your account'}
+            {isAdminLogin
+              ? "Access the administration panel"
+              : "Sign in to your account"}
           </p>
         </div>
 
@@ -133,7 +139,9 @@ export const LoginPage = () => {
                     <div className="w-full border-t border-gray-300"></div>
                   </div>
                   <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-gray-500">Or continue with email</span>
+                    <span className="px-2 bg-white text-gray-500">
+                      Or continue with email
+                    </span>
                   </div>
                 </div>
               </>
@@ -165,13 +173,24 @@ export const LoginPage = () => {
                   <Input
                     id="password"
                     name="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="pl-10"
+                    className="pl-10 pr-10"
                     placeholder="••••••••"
                     required
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
+                  </button>
                 </div>
               </div>
 
@@ -181,7 +200,10 @@ export const LoginPage = () => {
                     <input type="checkbox" className="rounded" />
                     <span className="text-gray-600">Remember me</span>
                   </label>
-                  <Link to="/forgot-password" className="text-amber-600 hover:text-amber-700">
+                  <Link
+                    to="/forgot-password"
+                    className="text-amber-600 hover:text-amber-700"
+                  >
                     Forgot password?
                   </Link>
                 </div>
@@ -191,7 +213,11 @@ export const LoginPage = () => {
                 type="submit"
                 size="lg"
                 disabled={isLoading}
-                className={`w-full ${isAdminLogin ? 'bg-gray-900 hover:bg-gray-800' : 'bg-amber-600 hover:bg-amber-700'}`}
+                className={`w-full ${
+                  isAdminLogin
+                    ? "bg-gray-900 hover:bg-gray-800"
+                    : "bg-amber-600 hover:bg-amber-700"
+                }`}
               >
                 {isLoading ? (
                   <span className="flex items-center">
@@ -201,7 +227,7 @@ export const LoginPage = () => {
                 ) : (
                   <>
                     <LogIn className="w-5 h-5 mr-2" />
-                    {isAdminLogin ? 'Sign In as Admin' : 'Sign In'}
+                    {isAdminLogin ? "Sign In as Admin" : "Sign In"}
                   </>
                 )}
               </Button>
@@ -209,8 +235,11 @@ export const LoginPage = () => {
 
             {!isAdminLogin && (
               <p className="text-center text-sm text-gray-600 mt-6">
-                Don't have an account?{' '}
-                <Link to="/register" className="text-amber-600 hover:text-amber-700 font-semibold">
+                Don't have an account?{" "}
+                <Link
+                  to="/register"
+                  className="text-amber-600 hover:text-amber-700 font-semibold"
+                >
                   Sign up
                 </Link>
               </p>
@@ -218,7 +247,10 @@ export const LoginPage = () => {
 
             {isAdminLogin && (
               <div className="mt-6 text-center">
-                <Link to="/" className="text-sm text-gray-600 hover:text-amber-600 flex items-center justify-center">
+                <Link
+                  to="/"
+                  className="text-sm text-gray-600 hover:text-amber-600 flex items-center justify-center"
+                >
                   <ArrowLeft className="w-4 h-4 mr-1" />
                   Back to Website
                 </Link>
