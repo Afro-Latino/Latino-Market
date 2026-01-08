@@ -1,10 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { getCart, removeFromCart, updateCartQuantity, getCartTotal, clearCart } from '../mock';
-import { Button } from '../components/ui/button';
-import { Card, CardContent } from '../components/ui/card';
-import { toast } from 'sonner';
-import { Trash2, Minus, Plus, ShoppingBag, ArrowRight } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  getCart,
+  removeFromCart,
+  updateCartQuantity,
+  getCartTotal,
+  clearCart,
+} from "../mock";
+import { Button } from "../components/ui/button";
+import { Card, CardContent } from "../components/ui/card";
+import { toast } from "sonner";
+import { Trash2, Minus, Plus, ShoppingBag, ArrowRight } from "lucide-react";
 
 export const CartPage = () => {
   const [cart, setCart] = useState([]);
@@ -13,8 +19,8 @@ export const CartPage = () => {
 
   useEffect(() => {
     loadCart();
-    window.addEventListener('cartUpdated', loadCart);
-    return () => window.removeEventListener('cartUpdated', loadCart);
+    window.addEventListener("cartUpdated", loadCart);
+    return () => window.removeEventListener("cartUpdated", loadCart);
   }, []);
 
   const loadCart = () => {
@@ -25,30 +31,30 @@ export const CartPage = () => {
   const handleRemove = (productId) => {
     removeFromCart(productId);
     loadCart();
-    window.dispatchEvent(new Event('cartUpdated'));
-    toast.success('Item removed from cart');
+    window.dispatchEvent(new Event("cartUpdated"));
+    toast.success("Item removed from cart");
   };
 
   const handleUpdateQuantity = (productId, newQuantity) => {
     if (newQuantity < 1) return;
     updateCartQuantity(productId, newQuantity);
     loadCart();
-    window.dispatchEvent(new Event('cartUpdated'));
+    window.dispatchEvent(new Event("cartUpdated"));
   };
 
   const handleClearCart = () => {
     clearCart();
     loadCart();
-    window.dispatchEvent(new Event('cartUpdated'));
-    toast.success('Cart cleared');
+    window.dispatchEvent(new Event("cartUpdated"));
+    toast.success("Cart cleared");
   };
 
   const handleCheckout = () => {
     if (cart.length === 0) {
-      toast.error('Your cart is empty');
+      toast.error("Your cart is empty");
       return;
     }
-    navigate('/checkout');
+    navigate("/checkout");
   };
 
   const deliveryFee = total > 50 ? 0 : 10;
@@ -60,7 +66,9 @@ export const CartPage = () => {
         <div className="text-center">
           <ShoppingBag className="w-24 h-24 mx-auto mb-6 text-gray-300" />
           <h2 className="text-3xl font-bold mb-4">Your cart is empty</h2>
-          <p className="text-gray-600 mb-8">Discover our amazing products from Africa and Latin America</p>
+          <p className="text-gray-600 mb-8">
+            Discover our amazing products from Africa and Latin America
+          </p>
           <Button asChild size="lg" className="bg-amber-600 hover:bg-amber-700">
             <Link to="/shop">Start Shopping</Link>
           </Button>
@@ -74,7 +82,9 @@ export const CartPage = () => {
       <div className="bg-gradient-to-r from-amber-600 to-red-600 text-white py-12">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold">Shopping Cart</h1>
-          <p className="text-lg mt-2 opacity-90">{cart.length} items in your cart</p>
+          <p className="text-lg mt-2 opacity-90">
+            {cart.length} items in your cart
+          </p>
         </div>
       </div>
 
@@ -98,8 +108,14 @@ export const CartPage = () => {
 
                 <div className="space-y-6">
                   {cart.map((item) => (
-                    <div key={item.id} className="flex gap-4 pb-6 border-b last:border-0">
-                      <Link to={`/product/${item.id}`} className="flex-shrink-0">
+                    <div
+                      key={item.id}
+                      className="flex gap-4 pb-6 border-b last:border-0"
+                    >
+                      <Link
+                        to={`/product/${item.id}`}
+                        className="flex-shrink-0"
+                      >
                         <img
                           src={item.image}
                           alt={item.name}
@@ -108,20 +124,36 @@ export const CartPage = () => {
                       </Link>
                       <div className="flex-1">
                         <Link to={`/product/${item.id}`}>
-                          <h3 className="font-semibold text-lg mb-1 hover:text-amber-600">{item.name}</h3>
+                          <h3 className="font-semibold text-lg mb-1 hover:text-amber-600">
+                            {item.name}
+                          </h3>
                         </Link>
-                        <p className="text-sm text-gray-600 mb-2">{item.country} • {item.culture}</p>
+                        <p className="text-sm text-gray-600 mb-2">
+                          {item.country} • {item.culture}
+                        </p>
                         <div className="flex items-center space-x-4">
                           <div className="flex items-center border rounded-lg">
                             <button
-                              onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
+                              onClick={() =>
+                                handleUpdateQuantity(
+                                  item.product_id,
+                                  item.quantity - 1
+                                )
+                              }
                               className="p-2 hover:bg-gray-100"
                             >
                               <Minus className="w-4 h-4" />
                             </button>
-                            <span className="px-4 py-2 border-x">{item.quantity}</span>
+                            <span className="px-4 py-2 border-x">
+                              {item.quantity}
+                            </span>
                             <button
-                              onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+                              onClick={() =>
+                                handleUpdateQuantity(
+                                  item.product_id,
+                                  item.quantity + 1
+                                )
+                              }
                               className="p-2 hover:bg-gray-100"
                             >
                               <Plus className="w-4 h-4" />
@@ -133,7 +165,7 @@ export const CartPage = () => {
                         </div>
                       </div>
                       <button
-                        onClick={() => handleRemove(item.id)}
+                        onClick={() => handleRemove(item.product_id)}
                         className="text-red-600 hover:text-red-700 p-2"
                       >
                         <Trash2 className="w-5 h-5" />
@@ -150,7 +182,7 @@ export const CartPage = () => {
             <Card className="sticky top-24">
               <CardContent className="p-6">
                 <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
-                
+
                 <div className="space-y-4 mb-6">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Subtotal</span>
@@ -174,7 +206,9 @@ export const CartPage = () => {
                   <div className="border-t pt-4">
                     <div className="flex justify-between text-xl font-bold">
                       <span>Total</span>
-                      <span className="text-amber-600">${finalTotal.toFixed(2)}</span>
+                      <span className="text-amber-600">
+                        ${finalTotal.toFixed(2)}
+                      </span>
                     </div>
                   </div>
                 </div>
