@@ -109,11 +109,11 @@ export const CartPage = () => {
                 <div className="space-y-6">
                   {cart.map((item) => (
                     <div
-                      key={item.id}
+                      key={item.product_id}
                       className="flex gap-4 pb-6 border-b last:border-0"
                     >
                       <Link
-                        to={`/product/${item.id}`}
+                        to={`/product/${item.product_id}`}
                         className="flex-shrink-0"
                       >
                         <img
@@ -123,7 +123,7 @@ export const CartPage = () => {
                         />
                       </Link>
                       <div className="flex-1">
-                        <Link to={`/product/${item.id}`}>
+                        <Link to={`/product/${item.product_id}`}>
                           <h3 className="font-semibold text-lg mb-1 hover:text-amber-600">
                             {item.name}
                           </h3>
