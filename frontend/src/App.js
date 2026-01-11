@@ -18,6 +18,7 @@ import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { AccountPage } from "./pages/AccountPage";
 import { AdminPage } from "./pages/AdminPage";
+import { OrderSuccessPage } from "./pages/OrderSuccessPage";
 import "./App.css";
 
 function App() {
@@ -55,6 +56,10 @@ function App() {
                       <Route path="/about" element={<AboutPage />} />
                       <Route path="/account" element={<AccountPage />} />
                       <Route path="/deals" element={<ShopPage />} />
+                      <Route
+                        path="/order-success"
+                        element={<OrderSuccessPage />}
+                      />
                     </Routes>
                   </main>
                   <Footer />
