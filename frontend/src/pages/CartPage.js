@@ -57,8 +57,8 @@ export const CartPage = () => {
     navigate("/checkout");
   };
 
-  const deliveryFee = total > 50 ? 0 : 10;
-  const finalTotal = total + deliveryFee;
+  const deliveryFee = 0;
+  const finalTotal = total;
 
   if (cart.length === 0) {
     return (
@@ -188,21 +188,6 @@ export const CartPage = () => {
                     <span className="text-gray-600">Subtotal</span>
                     <span className="font-semibold">${total.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Delivery Fee</span>
-                    <span className="font-semibold">
-                      {deliveryFee === 0 ? (
-                        <span className="text-green-600">FREE</span>
-                      ) : (
-                        `$${deliveryFee.toFixed(2)}`
-                      )}
-                    </span>
-                  </div>
-                  {total < 50 && (
-                    <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded-lg">
-                      Add ${(50 - total).toFixed(2)} more for free delivery!
-                    </div>
-                  )}
                   <div className="border-t pt-4">
                     <div className="flex justify-between text-xl font-bold">
                       <span>Total</span>

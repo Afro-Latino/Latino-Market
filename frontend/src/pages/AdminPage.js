@@ -1414,7 +1414,7 @@ export const AdminPage = () => {
 
                       <div className="flex flex-col items-end gap-3 w-full md:w-auto">
                         <p className="text-2xl font-bold text-emerald-600">
-                          ${order.total?.toFixed(2)}
+                          ${order.subtotal?.toFixed(2)}
                         </p>
                         <div className="flex flex-wrap gap-2 justify-end w-full">
                           <div className="flex flex-col">
@@ -1493,26 +1493,55 @@ export const AdminPage = () => {
                         </h4>
                         <div className="bg-white rounded-md border border-gray-200 shadow-sm overflow-hidden">
                           {order.items && order.items.length > 0 ? (
-                            <div className="divide-y divide-gray-100">
-                              {order.items.map((item, idx) => (
-                                <div
-                                  key={idx}
-                                  className="flex justify-between items-center p-3 hover:bg-gray-50 transition-colors"
-                                >
-                                  <div className="flex items-center gap-3">
-                                    <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">
-                                      {item.quantity}
+                            <>
+                              <div className="divide-y divide-gray-100">
+                                {order.items.map((item, idx) => (
+                                  <div
+                                    key={idx}
+                                    className="flex justify-between items-center p-3 hover:bg-gray-50 transition-colors"
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <div className="w-10 h-10 rounded-md bg-gray-50 border flex-shrink-0 flex items-center justify-center overflow-hidden">
+                                        {item.image ? (
+                                          <img
+                                            src={item.image}
+                                            alt=""
+                                            className="w-full h-full object-cover"
+                                          />
+                                        ) : (
+                                          <Package className="w-5 h-5 text-gray-300" />
+                                        )}
+                                      </div>
+                                      <div>
+                                        <p className="font-medium text-gray-800 leading-tight">
+                                          {item.name}
+                                        </p>
+                                        <p className="text-[10px] text-gray-500 mt-0.5">
+                                          ${item.price?.toFixed(2)} ×{" "}
+                                          {item.quantity}
+                                        </p>
+                                      </div>
                                     </div>
-                                    <span className="font-medium text-gray-700">
-                                      {item.name}
+                                    <span className="font-bold text-gray-900">
+                                      ${(item.price * item.quantity).toFixed(2)}
                                     </span>
                                   </div>
-                                  <span className="font-semibold text-gray-900">
-                                    ${(item.price * item.quantity).toFixed(2)}
+                                ))}
+                              </div>
+                              {/* Detailed Cost Breakdown */}
+                              <div className="bg-gray-50/50 p-4 space-y-2 border-t border-gray-100">
+                                <div className="flex justify-between text-xs text-gray-600">
+                                  <span>Items Subtotal</span>
+                                  <span>${order.subtotal?.toFixed(2)}</span>
+                                </div>
+                                <div className="flex justify-between text-sm font-bold text-gray-900 border-t border-gray-200 pt-2 mt-1">
+                                  <span>Order Total</span>
+                                  <span className="text-emerald-600 text-base">
+                                    ${order.subtotal?.toFixed(2)}
                                   </span>
                                 </div>
-                              ))}
-                            </div>
+                              </div>
+                            </>
                           ) : (
                             <div className="p-4 text-center">
                               <p className="text-gray-500 italic">
@@ -3279,60 +3308,6 @@ export const AdminPage = () => {
                     </div>
                   )}
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Delivery Settings */}
-            <Card>
-              <CardContent className="p-6">
-                <h2 className="text-xl font-bold mb-4">Delivery Settings</h2>
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div>
-                    <Label>Free Delivery Threshold ($)</Label>
-                    <Input
-                      type="number"
-                      value={siteSettings.free_delivery_threshold || 50}
-                      onChange={(e) =>
-                        setSiteSettings({
-                          ...siteSettings,
-                          free_delivery_threshold: parseFloat(e.target.value),
-                        })
-                      }
-                    />
-                  </div>
-                  <div>
-                    <Label>Base Fee ($)</Label>
-                    <Input
-                      type="number"
-                      value={siteSettings.delivery_base_fee || 10}
-                      onChange={(e) =>
-                        setSiteSettings({
-                          ...siteSettings,
-                          delivery_base_fee: parseFloat(e.target.value),
-                        })
-                      }
-                    />
-                  </div>
-                  <div>
-                    <Label>Per KM Fee ($)</Label>
-                    <Input
-                      type="number"
-                      value={siteSettings.delivery_per_km_fee || 2}
-                      onChange={(e) =>
-                        setSiteSettings({
-                          ...siteSettings,
-                          delivery_per_km_fee: parseFloat(e.target.value),
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-                <Button
-                  onClick={handleUpdateSettings}
-                  className="mt-4 bg-green-600"
-                >
-                  Save Delivery
-                </Button>
               </CardContent>
             </Card>
 
