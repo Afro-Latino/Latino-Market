@@ -78,6 +78,10 @@ export const ShopPage = () => {
   }, [location, searchParams]);
 
   const handleAddToCart = (product) => {
+    if (product.in_stock === false) {
+      toast.error(`${product.name} is currently out of stock`);
+      return;
+    }
     addToCart(product, 1);
     window.dispatchEvent(new Event("cartUpdated"));
     toast.success(
@@ -218,11 +222,20 @@ export const ShopPage = () => {
                         <img
                           src={product.image}
                           alt={product.name}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ${
+                            !product.in_stock ? "grayscale opacity-60" : ""
+                          }`}
                         />
                         <div className="absolute top-2 right-2 bg-white px-2 py-1 rounded-full text-xs font-semibold">
                           {product.culture}
                         </div>
+                        {product.in_stock === false && (
+                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                            <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+                              Out of Stock
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </Link>
                     <CardContent className="p-4">
@@ -244,10 +257,17 @@ export const ShopPage = () => {
                       </div>
                       <Button
                         onClick={() => handleAddToCart(product)}
-                        className="w-full bg-amber-600 hover:bg-amber-700"
+                        disabled={product.in_stock === false}
+                        className={`w-full ${
+                          product.in_stock === false
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-amber-600 hover:bg-amber-700"
+                        }`}
                       >
                         <ShoppingCart className="w-4 h-4 mr-2" />
-                        Add to Cart
+                        {product.in_stock === false
+                          ? "Out of Stock"
+                          : "Add to Cart"}
                       </Button>
                     </CardContent>
                   </Card>
