@@ -116,6 +116,16 @@ export const CheckoutPage = () => {
     setIsSubmitting(true);
 
     try {
+      // Final stock check
+      const hasOutOfStock = cart.some((item) => item.in_stock === false);
+      if (hasOutOfStock) {
+        toast.error(
+          "One or more items in your cart are out of stock. Please remove them and try again."
+        );
+        setIsSubmitting(false);
+        return;
+      }
+
       // Prepare order data
       const orderData = {
         items: cart.map((item) => ({

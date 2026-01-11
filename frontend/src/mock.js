@@ -288,6 +288,14 @@ export const saveCart = (cart) => {
 };
 
 export const addToCart = (product, quantity = 1) => {
+  if (product.in_stock === false) {
+    console.warn(
+      "Attempted to add out of stock product to cart:",
+      product.name
+    );
+    return getCart();
+  }
+
   const cart = getCart();
   const existingItem = cart.find(
     (item) => item.product_id === product.product_id

@@ -54,8 +54,17 @@ export const CartPage = () => {
       toast.error("Your cart is empty");
       return;
     }
+    const hasOutOfStock = cart.some((item) => item.in_stock === false);
+    if (hasOutOfStock) {
+      toast.error(
+        "Please remove out of stock items from your cart before checking out"
+      );
+      return;
+    }
     navigate("/checkout");
   };
+
+  const hasOutOfStockItems = cart.some((item) => item.in_stock === false);
 
   const deliveryFee = 0;
   const finalTotal = total;
@@ -131,8 +140,20 @@ export const CartPage = () => {
                         <p className="text-sm text-gray-600 mb-2">
                           {item.country} • {item.culture}
                         </p>
+                        {item.in_stock === false && (
+                          <div className="bg-red-50 text-red-600 px-3 py-1 rounded text-xs font-bold mb-2 flex items-center">
+                            <Package className="w-3 h-3 mr-1" /> OUT OF STOCK -
+                            Please remove to proceed
+                          </div>
+                        )}
                         <div className="flex items-center space-x-4">
-                          <div className="flex items-center border rounded-lg">
+                          <div
+                            className={`flex items-center border rounded-lg ${
+                              item.in_stock === false
+                                ? "opacity-50 pointer-events-none bg-gray-50"
+                                : ""
+                            }`}
+                          >
                             <button
                               onClick={() =>
                                 handleUpdateQuantity(
@@ -140,11 +161,12 @@ export const CartPage = () => {
                                   item.quantity - 1
                                 )
                               }
-                              className="p-2 hover:bg-gray-100"
+                              disabled={item.in_stock === false}
+                              className="p-2 hover:bg-gray-100 disabled:cursor-not-allowed"
                             >
                               <Minus className="w-4 h-4" />
                             </button>
-                            <span className="px-4 py-2 border-x">
+                            <span className="px-4 py-2 border-x font-medium">
                               {item.quantity}
                             </span>
                             <button
@@ -154,12 +176,19 @@ export const CartPage = () => {
                                   item.quantity + 1
                                 )
                               }
-                              className="p-2 hover:bg-gray-100"
+                              disabled={item.in_stock === false}
+                              className="p-2 hover:bg-gray-100 disabled:cursor-not-allowed"
                             >
                               <Plus className="w-4 h-4" />
                             </button>
                           </div>
-                          <div className="text-xl font-bold text-amber-600">
+                          <div
+                            className={`text-xl font-bold ${
+                              item.in_stock === false
+                                ? "text-gray-400"
+                                : "text-amber-600"
+                            }`}
+                          >
                             ${(item.price * item.quantity).toFixed(2)}
                           </div>
                         </div>
@@ -188,6 +217,12 @@ export const CartPage = () => {
                     <span className="text-gray-600">Subtotal</span>
                     <span className="font-semibold">${total.toFixed(2)}</span>
                   </div>
+                  {hasOutOfStockItems && (
+                    <div className="p-3 bg-red-50 border border-red-100 rounded text-red-600 text-sm font-medium animate-pulse">
+                      Some items in your cart are out of stock. Please remove
+                      them to continue.
+                    </div>
+                  )}
                   <div className="border-t pt-4">
                     <div className="flex justify-between text-xl font-bold">
                       <span>Total</span>
@@ -201,9 +236,16 @@ export const CartPage = () => {
                 <Button
                   onClick={handleCheckout}
                   size="lg"
-                  className="w-full bg-amber-600 hover:bg-amber-700 text-white mb-4"
+                  disabled={hasOutOfStockItems}
+                  className={`w-full text-white mb-4 ${
+                    hasOutOfStockItems
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-amber-600 hover:bg-amber-700"
+                  }`}
                 >
-                  Proceed to Checkout
+                  {hasOutOfStockItems
+                    ? "Remove Out of Stock Items"
+                    : "Proceed to Checkout"}
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
 
