@@ -14,6 +14,7 @@ import { CheckoutPage } from "./pages/CheckoutPage";
 import { RecipesPage } from "./pages/RecipesPage";
 import { AboutPage } from "./pages/AboutPage";
 import { BlogPage } from "./pages/BlogPage";
+import { BlogPostPage } from "./pages/BlogPostPage";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { AccountPage } from "./pages/AccountPage";
@@ -53,6 +54,7 @@ function App() {
                       <Route path="/checkout" element={<CheckoutPage />} />
                       <Route path="/recipes" element={<RecipesPage />} />
                       <Route path="/blog" element={<BlogPage />} />
+                      <Route path="/blog/:slug" element={<BlogPostPage />} />
                       <Route path="/about" element={<AboutPage />} />
                       <Route path="/account" element={<AccountPage />} />
                       <Route path="/deals" element={<ShopPage />} />
