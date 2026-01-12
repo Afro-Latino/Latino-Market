@@ -102,65 +102,65 @@ export const Header = () => {
 
       {/* Main Header (White) */}
       <div className="bg-white shadow-sm">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 lg:px-6">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link to="/" className="flex items-center">
               <img
                 src="https://customer-assets.emergentagent.com/job_culticommerce/artifacts/x3503la8_afro-latino%20logo.png"
                 alt="Afro-Latino Marketplace"
-                className="h-14 w-auto"
+                className="h-10 lg:h-12 xl:h-14 w-auto transition-all"
               />
             </Link>
 
             {/* Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
+            <nav className="hidden xl:flex items-center space-x-6">
               <Link
                 to="/shop"
-                className="text-gray-700 hover:text-amber-600 transition-colors font-medium"
+                className="text-gray-700 hover:text-amber-600 transition-colors font-medium text-sm"
               >
                 Shop
               </Link>
               <Link
                 to="/shop/african"
-                className="text-gray-700 hover:text-amber-600 transition-colors font-medium"
+                className="text-gray-700 hover:text-amber-600 transition-colors font-medium text-sm"
               >
                 African
               </Link>
               <Link
                 to="/shop/latino"
-                className="text-gray-700 hover:text-amber-600 transition-colors font-medium"
+                className="text-gray-700 hover:text-amber-600 transition-colors font-medium text-sm"
               >
                 Latino
               </Link>
               <Link
                 to="/recipes"
-                className="text-gray-700 hover:text-amber-600 transition-colors font-medium"
+                className="text-gray-700 hover:text-amber-600 transition-colors font-medium text-sm"
               >
                 Recipes
               </Link>
               <Link
                 to="/deals"
-                className="text-gray-700 hover:text-amber-600 transition-colors font-medium"
+                className="text-gray-700 hover:text-amber-600 transition-colors font-medium text-sm"
               >
                 Deals
               </Link>
               <Link
                 to="/blog"
-                className="text-gray-700 hover:text-amber-600 transition-colors font-medium"
+                className="text-gray-700 hover:text-amber-600 transition-colors font-medium text-sm"
               >
                 Blog
               </Link>
               <Link
                 to="/about"
-                className="text-gray-700 hover:text-amber-600 transition-colors font-medium"
+                className="text-gray-700 hover:text-amber-600 transition-colors font-medium text-sm"
               >
                 About
               </Link>
             </nav>
 
             {/* Right side - Search, Language, User, Cart */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3 lg:space-x-4">
               <form
                 onSubmit={handleSearch}
                 className="hidden lg:flex items-center"
@@ -168,16 +168,16 @@ export const Header = () => {
                 <div className="relative">
                   <input
                     type="text"
-                    placeholder="Search for ingredients..."
+                    placeholder="Search..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-64 px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    className="w-40 xl:w-56 px-4 py-2 pr-10 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all duration-300"
                   />
                   <button
                     type="submit"
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-amber-600"
                   >
-                    <Search className="w-5 h-5" />
+                    <Search className="w-4 h-4" />
                   </button>
                 </div>
               </form>
@@ -188,16 +188,16 @@ export const Header = () => {
                 to="/account"
                 className="text-gray-700 hover:text-amber-600 transition-colors"
               >
-                <User className="w-6 h-6" />
+                <User className="w-5 h-5 lg:w-6 lg:h-6" />
               </Link>
 
               <Link
                 to="/cart"
                 className="relative text-gray-700 hover:text-amber-600 transition-colors"
               >
-                <ShoppingCart className="w-6 h-6" />
+                <ShoppingCart className="w-5 h-5 lg:w-6 lg:h-6" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 lg:-top-2 lg:-right-2 bg-red-600 text-white text-[10px] lg:text-xs rounded-full w-4 h-4 lg:w-5 lg:h-5 flex items-center justify-center">
                     {cartCount}
                   </span>
                 )}
@@ -205,7 +205,7 @@ export const Header = () => {
 
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden text-gray-700"
+                className="xl:hidden text-gray-700 ml-2"
               >
                 {mobileMenuOpen ? (
                   <X className="w-6 h-6" />
@@ -218,7 +218,7 @@ export const Header = () => {
 
           {/* Mobile Menu */}
           {mobileMenuOpen && (
-            <div className="md:hidden py-4 border-t">
+            <div className="xl:hidden py-4 border-t">
               <nav className="flex flex-col space-y-4">
                 <Link
                   to="/shop"
