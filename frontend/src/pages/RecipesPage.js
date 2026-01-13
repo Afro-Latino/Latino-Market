@@ -1,13 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { recipesAPI } from '../services/api';
-import { Button } from '../components/ui/button';
-import { Card, CardContent } from '../components/ui/card';
-import { Clock, ChefHat, Search } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { recipesAPI } from "../services/api";
+import { Button } from "../components/ui/button";
+import { Card, CardContent } from "../components/ui/card";
+import { Clock, ChefHat, Search, Utensils } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../components/ui/dialog";
 
 export const RecipesPage = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCulture, setSelectedCulture] = useState('all');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCulture, setSelectedCulture] = useState("all");
   const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,19 +23,19 @@ export const RecipesPage = () => {
     const fetchRecipes = async () => {
       try {
         const params = {};
-        if (selectedCulture !== 'all') params.culture = selectedCulture;
+        if (selectedCulture !== "all") params.culture = selectedCulture;
         if (searchQuery) params.search = searchQuery;
-        
+
         const response = await recipesAPI.getAll(params);
         setRecipes(response.recipes || []);
         setFilteredRecipes(response.recipes || []);
       } catch (error) {
-        console.error('Error fetching recipes:', error);
+        console.error("Error fetching recipes:", error);
       } finally {
         setLoading(false);
       }
     };
-    
+
     fetchRecipes();
   }, [selectedCulture, searchQuery]);
 
@@ -36,9 +43,12 @@ export const RecipesPage = () => {
     <div className="min-h-screen bg-gray-50">
       <div className="bg-gradient-to-r from-amber-600 to-red-600 text-white py-16">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">Afro-Latino Kitchen</h1>
+          <h1 className="text-5xl md:text-6xl font-bold mb-6">
+            Afro-Latino Kitchen
+          </h1>
           <p className="text-xl opacity-90 max-w-2xl mx-auto">
-            Discover authentic recipes and fusion dishes that celebrate the rich culinary heritage of Africa and Latin America
+            Discover authentic recipes and fusion dishes that celebrate the rich
+            culinary heritage of Africa and Latin America
           </p>
         </div>
       </div>
@@ -58,30 +68,46 @@ export const RecipesPage = () => {
           </div>
           <div className="flex gap-2">
             <Button
-              onClick={() => setSelectedCulture('all')}
-              variant={selectedCulture === 'all' ? 'default' : 'outline'}
-              className={selectedCulture === 'all' ? 'bg-amber-600 hover:bg-amber-700' : ''}
+              onClick={() => setSelectedCulture("all")}
+              variant={selectedCulture === "all" ? "default" : "outline"}
+              className={
+                selectedCulture === "all"
+                  ? "bg-amber-600 hover:bg-amber-700"
+                  : ""
+              }
             >
               All Recipes
             </Button>
             <Button
-              onClick={() => setSelectedCulture('African')}
-              variant={selectedCulture === 'African' ? 'default' : 'outline'}
-              className={selectedCulture === 'African' ? 'bg-amber-600 hover:bg-amber-700' : ''}
+              onClick={() => setSelectedCulture("African")}
+              variant={selectedCulture === "African" ? "default" : "outline"}
+              className={
+                selectedCulture === "African"
+                  ? "bg-amber-600 hover:bg-amber-700"
+                  : ""
+              }
             >
               African
             </Button>
             <Button
-              onClick={() => setSelectedCulture('Latino')}
-              variant={selectedCulture === 'Latino' ? 'default' : 'outline'}
-              className={selectedCulture === 'Latino' ? 'bg-amber-600 hover:bg-amber-700' : ''}
+              onClick={() => setSelectedCulture("Latino")}
+              variant={selectedCulture === "Latino" ? "default" : "outline"}
+              className={
+                selectedCulture === "Latino"
+                  ? "bg-amber-600 hover:bg-amber-700"
+                  : ""
+              }
             >
               Latino
             </Button>
             <Button
-              onClick={() => setSelectedCulture('Fusion')}
-              variant={selectedCulture === 'Fusion' ? 'default' : 'outline'}
-              className={selectedCulture === 'Fusion' ? 'bg-amber-600 hover:bg-amber-700' : ''}
+              onClick={() => setSelectedCulture("Fusion")}
+              variant={selectedCulture === "Fusion" ? "default" : "outline"}
+              className={
+                selectedCulture === "Fusion"
+                  ? "bg-amber-600 hover:bg-amber-700"
+                  : ""
+              }
             >
               Fusion
             </Button>
@@ -105,21 +131,106 @@ export const RecipesPage = () => {
                   </div>
                 </div>
                 <CardContent className="p-8 flex flex-col justify-center">
-                  <h3 className="text-3xl font-bold mb-4">{filteredRecipes[0].title}</h3>
-                  <p className="text-gray-700 mb-6 text-lg">{filteredRecipes[0].description}</p>
+                  <h3 className="text-3xl font-bold mb-4">
+                    {filteredRecipes[0].title}
+                  </h3>
+                  <p className="text-gray-700 mb-6 text-lg">
+                    {filteredRecipes[0].description}
+                  </p>
                   <div className="flex items-center space-x-6 mb-6">
                     <div className="flex items-center space-x-2 text-gray-600">
                       <Clock className="w-5 h-5" />
-                      <span>{filteredRecipes[0].cookTime}</span>
+                      <span>
+                        {filteredRecipes[0].cook_time ||
+                          filteredRecipes[0].cookTime}
+                      </span>
                     </div>
                     <div className="flex items-center space-x-2 text-gray-600">
                       <ChefHat className="w-5 h-5" />
                       <span>{filteredRecipes[0].difficulty}</span>
                     </div>
                   </div>
-                  <Button size="lg" className="bg-amber-600 hover:bg-amber-700">
-                    View Recipe
-                  </Button>
+
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        size="lg"
+                        className="bg-amber-600 hover:bg-amber-700"
+                      >
+                        View Recipe
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle className="text-3xl font-bold text-amber-900">
+                          {filteredRecipes[0].title}
+                        </DialogTitle>
+                        <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-4 h-4" />{" "}
+                            {filteredRecipes[0].cook_time ||
+                              filteredRecipes[0].cookTime}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <ChefHat className="w-4 h-4" />{" "}
+                            {filteredRecipes[0].difficulty}
+                          </span>
+                          <span className="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-medium">
+                            {filteredRecipes[0].culture}
+                          </span>
+                        </div>
+                      </DialogHeader>
+                      <div className="mt-6">
+                        <div className="relative h-64 w-full mb-8 rounded-xl overflow-hidden shadow-md">
+                          <img
+                            src={filteredRecipes[0].image}
+                            alt={filteredRecipes[0].title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-8">
+                          <div className="bg-amber-50/50 p-6 rounded-xl border border-amber-100">
+                            <h4 className="text-xl font-bold mb-4 flex items-center gap-2 text-amber-900 border-b border-amber-200 pb-2">
+                              <Utensils className="w-5 h-5" /> Ingredients
+                            </h4>
+                            <ul className="space-y-3">
+                              {filteredRecipes[0].ingredients?.map(
+                                (ingredient, index) => (
+                                  <li
+                                    key={index}
+                                    className="flex items-start gap-2 text-gray-700"
+                                  >
+                                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2 shrink-0" />
+                                    {ingredient}
+                                  </li>
+                                )
+                              )}
+                            </ul>
+                          </div>
+                          <div className="p-2">
+                            <h4 className="text-xl font-bold mb-4 flex items-center gap-2 text-amber-900 border-b border-gray-200 pb-2">
+                              Instructions
+                            </h4>
+                            <ol className="space-y-4">
+                              {filteredRecipes[0].instructions?.map(
+                                (instruction, index) => (
+                                  <li key={index} className="flex gap-4 group">
+                                    <span className="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-sm group-hover:bg-amber-600 group-hover:text-white transition-colors">
+                                      {index + 1}
+                                    </span>
+                                    <p className="text-gray-700 pt-1 leading-relaxed">
+                                      {instruction}
+                                    </p>
+                                  </li>
+                                )
+                              )}
+                            </ol>
+                          </div>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </CardContent>
               </div>
             </Card>
@@ -138,12 +249,17 @@ export const RecipesPage = () => {
             </div>
           ) : filteredRecipes.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">No recipes found matching your search.</p>
+              <p className="text-gray-500 text-lg">
+                No recipes found matching your search.
+              </p>
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredRecipes.map((recipe) => (
-                <Card key={recipe.id} className="group overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+                <Card
+                  key={recipe.recipe_id || recipe.id}
+                  className="group overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+                >
                   <div className="relative h-64 overflow-hidden">
                     <img
                       src={recipe.image}
@@ -158,20 +274,102 @@ export const RecipesPage = () => {
                     <h3 className="text-xl font-bold mb-3 group-hover:text-amber-600 transition-colors">
                       {recipe.title}
                     </h3>
-                    <p className="text-gray-600 mb-4 line-clamp-2">{recipe.description}</p>
+                    <p className="text-gray-600 mb-4 line-clamp-2">
+                      {recipe.description}
+                    </p>
                     <div className="flex items-center justify-between mb-4 text-sm text-gray-600">
                       <div className="flex items-center space-x-1">
                         <Clock className="w-4 h-4" />
-                        <span>{recipe.cookTime}</span>
+                        <span>{recipe.cook_time || recipe.cookTime}</span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <ChefHat className="w-4 h-4" />
                         <span>{recipe.difficulty}</span>
                       </div>
                     </div>
-                    <Button variant="outline" className="w-full group-hover:bg-amber-600 group-hover:text-white group-hover:border-amber-600">
-                      View Recipe
-                    </Button>
+
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full group-hover:bg-amber-600 group-hover:text-white group-hover:border-amber-600"
+                        >
+                          View Recipe
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                        <DialogHeader>
+                          <DialogTitle className="text-2xl font-bold text-amber-900">
+                            {recipe.title}
+                          </DialogTitle>
+                          <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                            <span className="flex items-center gap-1">
+                              <Clock className="w-4 h-4" />{" "}
+                              {recipe.cook_time || recipe.cookTime}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <ChefHat className="w-4 h-4" />{" "}
+                              {recipe.difficulty}
+                            </span>
+                            <span className="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-medium">
+                              {recipe.culture}
+                            </span>
+                          </div>
+                        </DialogHeader>
+                        <div className="mt-6">
+                          <div className="relative h-64 w-full mb-8 rounded-xl overflow-hidden shadow-md">
+                            <img
+                              src={recipe.image}
+                              alt={recipe.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+
+                          <div className="grid md:grid-cols-2 gap-8">
+                            <div className="bg-amber-50/50 p-6 rounded-xl border border-amber-100">
+                              <h4 className="text-xl font-bold mb-4 flex items-center gap-2 text-amber-900 border-b border-amber-200 pb-2">
+                                <Utensils className="w-5 h-5" /> Ingredients
+                              </h4>
+                              <ul className="space-y-3">
+                                {recipe.ingredients?.map(
+                                  (ingredient, index) => (
+                                    <li
+                                      key={index}
+                                      className="flex items-start gap-2 text-gray-700"
+                                    >
+                                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2 shrink-0" />
+                                      {ingredient}
+                                    </li>
+                                  )
+                                )}
+                              </ul>
+                            </div>
+                            <div className="p-2">
+                              <h4 className="text-xl font-bold mb-4 flex items-center gap-2 text-amber-900 border-b border-gray-200 pb-2">
+                                Instructions
+                              </h4>
+                              <ol className="space-y-4">
+                                {recipe.instructions?.map(
+                                  (instruction, index) => (
+                                    <li
+                                      key={index}
+                                      className="flex gap-4 group"
+                                    >
+                                      <span className="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-sm group-hover:bg-amber-600 group-hover:text-white transition-colors">
+                                        {index + 1}
+                                      </span>
+                                      <p className="text-gray-700 pt-1 leading-relaxed">
+                                        {instruction}
+                                      </p>
+                                    </li>
+                                  )
+                                )}
+                              </ol>
+                            </div>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
                   </CardContent>
                 </Card>
               ))}
